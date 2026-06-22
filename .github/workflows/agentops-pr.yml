@@ -231,6 +231,8 @@ jobs:
       - name: Run azd AI agent eval through AgentOps
         id: eval
         env:
+          AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+          AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
           AZURE_AI_FOUNDRY_PROJECT_ENDPOINT: ${{ vars.AZURE_AI_FOUNDRY_PROJECT_ENDPOINT }}
           AZURE_OPENAI_ENDPOINT: ${{ vars.AZURE_OPENAI_ENDPOINT }}
           AZURE_OPENAI_DEPLOYMENT: ${{ vars.AZURE_OPENAI_DEPLOYMENT }}
@@ -238,8 +240,21 @@ jobs:
           APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING || vars.APPLICATIONINSIGHTS_CONNECTION_STRING }}
         run: |
           set +e
-          agentops eval run --config ".agentops/deployments/agentops.candidate.yaml" --output ".agentops/results/latest"
-          ec=$?
+          mkdir -p .agentops/results/latest
+          ec=1
+          for attempt in 1 2; do
+            log=".agentops/results/latest/agentops-eval-attempt-${attempt}.log"
+            agentops eval run --config ".agentops/deployments/agentops.candidate.yaml" --output ".agentops/results/latest" 2>&1 | tee "$log"
+            ec=${PIPESTATUS[0]}
+            if [ $ec -ne 1 ] || ! grep -q "AzureDeveloperCLICredential: signal: killed" "$log" || [ $attempt -eq 2 ]; then
+              break
+            fi
+            echo "azd eval show credential subprocess was killed; refreshing azd auth and retrying once."
+            azd auth login \
+              --client-id "$AZURE_CLIENT_ID" \
+              --federated-credential-provider "github" \
+              --tenant-id "$AZURE_TENANT_ID"
+          done
           echo "exit_code=$ec" >> "$GITHUB_OUTPUT"
           if [ $ec -eq 0 ]; then
             echo "result=pass" >> "$GITHUB_OUTPUT"
