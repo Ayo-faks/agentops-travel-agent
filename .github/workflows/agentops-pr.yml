@@ -143,9 +143,60 @@ jobs:
         run: |
           azd extension install azure.ai.agents --version "$AGENTOPS_AZD_AI_AGENTS_EXTENSION_VERSION"
 
-      - name: Normalize candidate config paths (agentops 0.5.2 staging workaround)
+      - name: Normalize candidate + recipe paths (agentops 0.5.2 staging workaround)
         run: |
-          python -c "import os,yaml;p='.agentops/deployments/agentops.candidate.yaml';d=yaml.safe_load(open(p));f=lambda v:(os.path.abspath(v) if isinstance(v,str) and v and not os.path.isabs(v) else v);[d.__setitem__(k,f(d[k])) for k in ('eval_recipe','prompt_file','assert_path','redteam_path') if k in d];(isinstance(d.get('assert'),dict) and 'config' in d['assert'] and d['assert'].__setitem__('config',f(d['assert']['config'])));yaml.safe_dump(d,open(p,'w'),sort_keys=False);print('normalized eval_recipe =',d.get('eval_recipe'))"
+          python - <<'PY'
+          import os, yaml
+
+          def absify(v):
+              if isinstance(v, str) and v and not os.path.isabs(v):
+                  return os.path.abspath(v)
+              return v
+
+          cand_path = ".agentops/deployments/agentops.candidate.yaml"
+          cand = yaml.safe_load(open(cand_path))
+          for k in ("eval_recipe", "prompt_file", "assert_path", "redteam_path"):
+              if k in cand:
+                  cand[k] = absify(cand[k])
+          if isinstance(cand.get("assert"), dict) and "config" in cand["assert"]:
+              cand["assert"]["config"] = absify(cand["assert"]["config"])
+          yaml.safe_dump(cand, open(cand_path, "w"), sort_keys=False)
+          print("normalized eval_recipe =", cand.get("eval_recipe"))
+
+          recipe_path = cand.get("eval_recipe") or "src/travel-agent/eval.yaml"
+          recipe = yaml.safe_load(open(recipe_path))
+          ds = recipe.get("dataset")
+          if isinstance(ds, dict) and ds.get("local_uri"):
+              uri = ds["local_uri"]
+              if not os.path.exists(uri):
+                  repaired = os.path.abspath(os.path.join(".agentops/azd", os.path.basename(uri)))
+                  if os.path.exists(repaired):
+                      ds["local_uri"] = repaired
+                      yaml.safe_dump(recipe, open(recipe_path, "w"), sort_keys=False)
+                      print("repaired dataset.local_uri =", repaired)
+                  else:
+                      print("WARNING: dataset missing at", uri, "and", repaired)
+              else:
+                  print("dataset.local_uri OK =", uri)
+          PY
+
+      - name: Hydrate azd environment for Foundry project context
+        env:
+          AZURE_ENV_NAME: "sandbox"
+          AZURE_AI_FOUNDRY_PROJECT_ENDPOINT: ${{ vars.AZURE_AI_FOUNDRY_PROJECT_ENDPOINT }}
+          AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          AZURE_OPENAI_ENDPOINT: ${{ vars.AZURE_OPENAI_ENDPOINT }}
+        run: |
+          set -euo pipefail
+          azd env select "$AZURE_ENV_NAME" 2>/dev/null || azd env new "$AZURE_ENV_NAME" --no-prompt
+          azd env set FOUNDRY_PROJECT_ENDPOINT "$AZURE_AI_FOUNDRY_PROJECT_ENDPOINT"
+          azd env set AZURE_AI_FOUNDRY_PROJECT_ENDPOINT "$AZURE_AI_FOUNDRY_PROJECT_ENDPOINT"
+          azd env set AZURE_SUBSCRIPTION_ID "$AZURE_SUBSCRIPTION_ID"
+          if [ -n "${AZURE_OPENAI_ENDPOINT:-}" ]; then
+            azd env set AZURE_OPENAI_ENDPOINT "$AZURE_OPENAI_ENDPOINT"
+          fi
+          echo "Hydrated azd env '$AZURE_ENV_NAME':"
+          azd env get-values | sed -E 's/=.*/=<set>/'
 
       - name: Run azd AI agent eval through AgentOps
         id: eval
