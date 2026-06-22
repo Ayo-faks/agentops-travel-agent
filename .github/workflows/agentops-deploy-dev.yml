@@ -198,6 +198,19 @@ jobs:
           echo "Hydrated azd env '$AZURE_ENV_NAME':"
           azd env get-values | sed -E 's/=.*/=<set>/'
 
+      - name: Upload azd eval assets
+        env:
+          AZURE_ENV_NAME: "dev"
+        run: |
+          set -euo pipefail
+          recipe="$(python - <<'PY'
+          import yaml
+          cand = yaml.safe_load(open('.agentops/deployments/agentops.candidate.yaml'))
+          print(cand.get('eval_recipe') or 'src/travel-agent/eval.yaml')
+          PY
+          )"
+          azd --no-prompt --environment "$AZURE_ENV_NAME" ai agent eval update --config "$recipe"
+
       - name: Run azd AI agent eval through AgentOps
         id: eval
         env:
