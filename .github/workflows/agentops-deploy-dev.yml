@@ -117,7 +117,7 @@ jobs:
 
       - name: Install AgentOps Toolkit
         run: |
-          uv pip install --system "agentops-accelerator==0.5.2"
+          uv pip install --system "agentops-accelerator[foundry,agent]==0.5.2"
 
       - name: Set up Azure Developer CLI
         uses: Azure/setup-azd@v2
