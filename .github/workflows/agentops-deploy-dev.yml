@@ -198,7 +198,7 @@ jobs:
           echo "Hydrated azd env '$AZURE_ENV_NAME':"
           azd env get-values | sed -E 's/=.*/=<set>/'
 
-      - name: Upload azd eval assets
+      - name: Bootstrap azd eval assets
         env:
           AZURE_ENV_NAME: "dev"
           FOUNDRY_PROJECT_ENDPOINT: ${{ vars.AZURE_AI_FOUNDRY_PROJECT_ENDPOINT }}
@@ -211,7 +211,7 @@ jobs:
           PY
           )"
           python .github/scripts/bootstrap-azd-eval-evaluators.py --config "$recipe"
-          azd --no-prompt --environment "$AZURE_ENV_NAME" ai agent eval update --config "$recipe"
+          echo "Custom evaluators are bootstrapped only; skipping per-run evaluator version updates."
 
       - name: Run azd AI agent eval through AgentOps
         id: eval
