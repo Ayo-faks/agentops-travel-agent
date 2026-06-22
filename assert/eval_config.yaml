@@ -1,7 +1,7 @@
 # Real assert-ai 0.1.0 schema. Validate locally with:
 #   assert-ai run --config ./assert/eval_config.yaml
 # Targets the EXISTING Azure OpenAI deployment (gpt-4o-mini on
-# aifoundry-travelagent-cnrvigxvus7im) via LiteLLM. Set AZURE_API_KEY,
+# aifoundry-travelagent-cnrvigxvus7im) via LiteLLM. Set AZURE_AD_TOKEN,
 # AZURE_API_BASE, AZURE_API_VERSION before running (AgentOps injects the
 # base/version from the assert.env block in agentops.yaml).
 suite: travel-agent-v1
@@ -14,7 +14,7 @@ behavior:
   preset: travel_planner
 
 # LiteLLM-style model id. For Azure deployments, set the LiteLLM env vars
-# AZURE_API_KEY, AZURE_API_BASE, AZURE_API_VERSION before running.
+# AZURE_AD_TOKEN, AZURE_API_BASE, AZURE_API_VERSION before running.
 default_model:
   name: azure/gpt-4o-mini
 

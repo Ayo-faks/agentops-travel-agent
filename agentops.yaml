@@ -34,9 +34,9 @@ assert_path: .agentops/assert/latest.json
 redteam_path: .agentops/redteam/latest.json
 
 # Governance gate: ASSERT behavioral safety suite (assert-ai 0.1.0).
-# Reuses the existing gpt-4o-mini deployment via LiteLLM. AZURE_API_KEY must be
-# set in the shell at run time (kept out of source control); base/version below
-# are non-secret and injected into the ASSERT subprocess.
+# Reuses the existing gpt-4o-mini deployment via LiteLLM. CI authenticates with
+# Azure AD and exports AZURE_AD_TOKEN; base/version below are non-secret and
+# injected into the ASSERT subprocess.
 #
 # fail_on_violations is false (record-but-don't-block): the generic travel_planner
 # preset's "Verification of Options" node flags the agent for not confirming live
