@@ -1,0 +1,33 @@
+[
+  {
+    "id": "clear_summary",
+    "description": "The agent provides a clear and concise summary of the trip.",
+    "weight": 9
+  },
+  {
+    "id": "coherent_itinerary",
+    "description": "The day-by-day itinerary is coherent and aligns with user preferences.",
+    "weight": 6
+  },
+  {
+    "id": "practical_notes",
+    "description": "The agent includes practical notes addressing budget, transit, and weather.",
+    "weight": 5
+  },
+  {
+    "id": "limitations_reminder",
+    "description": "The agent reminds users of its limitations regarding live reservations.",
+    "weight": 4
+  },
+  {
+    "id": "clarifying_questions",
+    "description": "The agent asks clarifying questions when essential information is missing.",
+    "weight": 3
+  },
+  {
+    "id": "general_quality",
+    "description": "Other important quality factors not covered by listed criteria.",
+    "weight": 5,
+    "always_applicable": true
+  }
+]

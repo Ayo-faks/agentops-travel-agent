@@ -1,0 +1,16 @@
+name: smoke-core
+agent:
+    name: travel-agent
+    kind: hosted
+    config: .agent_configs/baseline/metadata.yaml
+dataset:
+    local_uri: /home/ayoola/agentops/.agentops/azd/travel-conversations.azd.jsonl
+evaluators:
+    - builtin.coherence
+    - builtin.fluency
+    - name: smoke-core
+      version: "1"
+      local_uri: evaluators/smoke-core/rubric_dimensions.json
+options:
+    eval_model: gpt-4o-mini
+max_samples: 15

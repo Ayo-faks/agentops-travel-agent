@@ -1,0 +1,562 @@
+{
+  "version": 1,
+  "generated_at": "2026-06-22T11:32:09.031427+00:00",
+  "workspace": "/home/ayoola/agentops",
+  "status": "ready_with_warnings",
+  "target": "travel-agent:2",
+  "blockers": [],
+  "warnings": [
+    "No baseline comparison was found; capture a known-good results.json before promoting production releases.",
+    "No AgentOps PR gate workflow was found.",
+    "No AgentOps deploy workflow was found for dev/qa/prod promotion.",
+    "Doctor reported warnings that should be reviewed before production.",
+    "Foundry control-plane is reachable, but no enabled continuous evaluation rule was detected.",
+    "Application Insights / Azure Monitor readiness is unknown; production traces and runtime metrics may not be available.",
+    "Foundry observability evidence is incomplete: intelligent trace sampling, trace replay link",
+    "No production trace regression dataset was found yet; harvest reviewed traces to turn production issues into regression tests."
+  ],
+  "ready": [
+    "Latest evaluation passed configured thresholds.",
+    "Explicit production thresholds are declared in agentops.yaml.",
+    "Foundry control-plane source is reachable.",
+    "Configured governance artifacts are present and evidence-ready."
+  ],
+  "checks": [
+    {
+      "name": "Latest eval gate",
+      "status": "ready",
+      "summary": "Latest evaluation passed configured thresholds.",
+      "evidence": {
+        "status": "ok",
+        "runner": "azd-ai-agent-eval",
+        "path": "/home/ayoola/agentops/.agentops/results/latest/results.json",
+        "passed": true,
+        "target": "travel-agent:2",
+        "target_kind": "foundry_prompt",
+        "started_at": "2026-06-22T08:31:09.859706+00:00",
+        "items_total": 1,
+        "items_passed_all": 1,
+        "metrics": {
+          "coherence": 1.0,
+          "fluency": 1.0,
+          "smoke-core": 1.0
+        },
+        "threshold_count": 3,
+        "has_comparison": false,
+        "foundry_report_url": null,
+        "cloud_evaluation": {},
+        "azd_evaluation": {
+          "recipe_path": "/home/ayoola/agentops/src/travel-agent/eval.yaml",
+          "run_id": "evalrun_f165eb04402a45999c21f8bb0a2d9b32",
+          "eval_id": "eval_47e5cc9f75cb4d21ba9977db40513bfb",
+          "status": "completed",
+          "report_url": "https://ai.azure.com/nextgen/r/PLV8AVX_RgmJZ8RycYGBJQ,rg-travel-agent-agentops,,aifoundry-travelagent-cnrvigxvus7im,travel-agent-sandbox/build/evaluations/eval_47e5cc9f75cb4d21ba9977db40513bfb/run/evalrun_f165eb04402a45999c21f8bb0a2d9b32",
+          "dataset": null,
+          "metric_binding": {
+            "smoke-core": "smoke-core",
+            "coherence": "coherence",
+            "fluency": "fluency"
+          },
+          "unused_metrics": []
+        },
+        "machine_readable_thresholds": true
+      }
+    },
+    {
+      "name": "Threshold policy",
+      "status": "ready",
+      "summary": "Explicit production thresholds are declared in agentops.yaml.",
+      "evidence": {
+        "thresholds": [
+          "smoke-core",
+          "coherence",
+          "fluency"
+        ]
+      }
+    },
+    {
+      "name": "Regression baseline",
+      "status": "warning",
+      "summary": "No baseline comparison was found; capture a known-good results.json before promoting production releases.",
+      "evidence": {}
+    },
+    {
+      "name": "PR gate",
+      "status": "warning",
+      "summary": "No AgentOps PR gate workflow was found.",
+      "evidence": {
+        "pr_gate": false,
+        "deploy_workflows": [],
+        "deploy_count": 0,
+        "scheduled_doctor": false,
+        "watchdog": false,
+        "github_workflows": false,
+        "azure_devops_pipelines": false
+      }
+    },
+    {
+      "name": "Deploy workflows",
+      "status": "warning",
+      "summary": "No AgentOps deploy workflow was found for dev/qa/prod promotion.",
+      "evidence": {
+        "pr_gate": false,
+        "deploy_workflows": [],
+        "deploy_count": 0,
+        "scheduled_doctor": false,
+        "watchdog": false,
+        "github_workflows": false,
+        "azure_devops_pipelines": false
+      }
+    },
+    {
+      "name": "Doctor readiness",
+      "status": "warning",
+      "summary": "Doctor reported warnings that should be reviewed before production.",
+      "evidence": {
+        "status": "ok",
+        "findings_total": 8,
+        "max_severity": "warning",
+        "counts": {
+          "critical": 0,
+          "warning": 6,
+          "info": 2
+        },
+        "top_findings": [
+          {
+            "id": "observability.trace_sampling_missing",
+            "severity": "warning",
+            "title": "Intelligent trace sampling is not evidence-ready",
+            "category": "operational_excellence"
+          },
+          {
+            "id": "opex.max_tokens_undefined",
+            "severity": "warning",
+            "title": "Output token limit is not set on model / evaluator configuration",
+            "category": "operational_excellence"
+          },
+          {
+            "id": "opex.release.no_continuous_eval",
+            "severity": "warning",
+            "title": "No enabled Foundry continuous evaluation rule is attached",
+            "category": "operational_excellence"
+          },
+          {
+            "id": "errors.no_runtime_telemetry",
+            "severity": "warning",
+            "title": "Production telemetry is not wired to the agent",
+            "category": "reliability"
+          },
+          {
+            "id": "responsible_ai.llm.dataset_bias_signals",
+            "severity": "warning",
+            "title": "[LLM-judged] Evaluation dataset shows distribution skew",
+            "category": "responsible_ai"
+          },
+          {
+            "id": "safety.config.continuous_eval_missing",
+            "severity": "warning",
+            "title": "No continuous evaluation rules configured",
+            "category": "responsible_ai"
+          },
+          {
+            "id": "observability.trace_replay_missing",
+            "severity": "info",
+            "title": "Trace replay link is not captured in release evidence",
+            "category": "operational_excellence"
+          },
+          {
+            "id": "opex.release.no_trace_regression_dataset",
+            "severity": "info",
+            "title": "Production traces are not feeding a regression dataset yet",
+            "category": "operational_excellence"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Foundry continuous evaluation",
+      "status": "warning",
+      "summary": "Foundry control-plane is reachable, but no enabled continuous evaluation rule was detected.",
+      "evidence": {
+        "status": "ok",
+        "agents_count": 1,
+        "evaluation_rules_count": 0,
+        "enabled_evaluation_rules": 0,
+        "diagnostics": {
+          "enabled": true,
+          "endpoint": "https://aifoundry-travelagent-cnrvigxvus7im.services.ai.azure.com/api/projects/travel-agent-sandbox",
+          "evaluation_rules_count": 0,
+          "status": "ok",
+          "agents_count": 1
+        }
+      }
+    },
+    {
+      "name": "Runtime monitoring",
+      "status": "warning",
+      "summary": "Application Insights / Azure Monitor readiness is unknown; production traces and runtime metrics may not be available.",
+      "evidence": {
+        "status": "skipped",
+        "request_count": 0,
+        "error_rate": null,
+        "p95_duration_seconds": null,
+        "input_token_count": null,
+        "output_token_count": null,
+        "rate_limit_429_count": 0,
+        "diagnostics": {
+          "enabled": true,
+          "status": "skipped",
+          "reason": "neither app_insights_resource_id nor log_analytics_workspace_id is configured, and no App Insights ApplicationId could be discovered from the connection string or Foundry project",
+          "discovery_reason": "Foundry telemetry discovery failed (ResourceNotFoundError: No Application Insights connection found.)."
+        }
+      }
+    },
+    {
+      "name": "Foundry observability",
+      "status": "warning",
+      "summary": "Foundry observability evidence is incomplete: intelligent trace sampling, trace replay link",
+      "evidence": {
+        "status": "ok",
+        "dataset_kind": "multi-turn",
+        "multi_turn_ready": true,
+        "multi_turn_rows": 0,
+        "rubrics_count": 1,
+        "rubrics": [
+          {
+            "name": "travel-concierge-quality",
+            "evaluator": "smoke-core",
+            "description": "Scores the Travel Agent against the intended product behavior.",
+            "dimensions": [
+              {
+                "name": "coherent_itinerary",
+                "description": "Completes the user's travel-planning goal and keeps the day-by-day plan aligned with stated constraints such as kids, budget, duration, and pace.",
+                "weight": 0.5
+              },
+              {
+                "name": "practical_notes",
+                "description": "Gives practical, actionable guidance on budget, transit, and weather without overpromising.",
+                "weight": 0.3
+              },
+              {
+                "name": "limitations_reminder",
+                "description": "Stays in scope and avoids claiming live bookings, confirmations, or prices it cannot verify.",
+                "weight": 0.2
+              }
+            ]
+          }
+        ],
+        "trace_sampling_enabled": false,
+        "trace_sampling_mode": null,
+        "sampling_policies": [],
+        "trace_replay_urls": [],
+        "evaluation_urls": [],
+        "datasets_url": null
+      }
+    },
+    {
+      "name": "Trace-to-dataset flywheel",
+      "status": "warning",
+      "summary": "No production trace regression dataset was found yet; harvest reviewed traces to turn production issues into regression tests.",
+      "evidence": {
+        "status": "missing",
+        "manifest": "/home/ayoola/agentops/.agentops/data/trace-regression-manifest.json"
+      }
+    },
+    {
+      "name": "AI Landing Zone readiness",
+      "status": "unknown",
+      "summary": "No AI Landing Zone signals were detected for this workspace.",
+      "evidence": {
+        "status": "not_detected"
+      }
+    },
+    {
+      "name": "Governance artifacts",
+      "status": "ready",
+      "summary": "Configured governance artifacts are present and evidence-ready.",
+      "evidence": {
+        "assert": {
+          "summary_schema_version": 1,
+          "kind": "assert",
+          "status": "present",
+          "path": ".agentops/assert/latest.json",
+          "sha256": "ec4645e4500e254a09679f2c2fcdac5f9094c7ca9a7302d15af173a95123d17a",
+          "size_bytes": 3534,
+          "schema_version": "unknown",
+          "name": null,
+          "configured": true,
+          "message": null,
+          "counts": {
+            "total": 4
+          },
+          "checkpoints_covered": [],
+          "checkpoints_missing": []
+        },
+        "acs": {
+          "summary_schema_version": 1,
+          "kind": "acs",
+          "status": "not_configured",
+          "path": null,
+          "sha256": null,
+          "size_bytes": null,
+          "schema_version": "unknown",
+          "name": null,
+          "configured": false,
+          "message": null,
+          "counts": {},
+          "checkpoints_covered": [],
+          "checkpoints_missing": []
+        },
+        "redteam": {
+          "summary_schema_version": 1,
+          "kind": "redteam",
+          "status": "present",
+          "path": ".agentops/redteam/latest.json",
+          "sha256": "2bb0c1546757eb9fb0faa9a94d29ad595671a73a2628737c67b3782d46e82175",
+          "size_bytes": 839,
+          "schema_version": "unknown",
+          "name": null,
+          "configured": true,
+          "message": null,
+          "counts": {
+            "total": 6
+          },
+          "checkpoints_covered": [],
+          "checkpoints_missing": []
+        }
+      }
+    }
+  ],
+  "links": [],
+  "latest_eval": {
+    "status": "ok",
+    "runner": "azd-ai-agent-eval",
+    "path": "/home/ayoola/agentops/.agentops/results/latest/results.json",
+    "passed": true,
+    "target": "travel-agent:2",
+    "target_kind": "foundry_prompt",
+    "started_at": "2026-06-22T08:31:09.859706+00:00",
+    "items_total": 1,
+    "items_passed_all": 1,
+    "metrics": {
+      "coherence": 1.0,
+      "fluency": 1.0,
+      "smoke-core": 1.0
+    },
+    "threshold_count": 3,
+    "has_comparison": false,
+    "foundry_report_url": null,
+    "cloud_evaluation": {},
+    "azd_evaluation": {
+      "recipe_path": "/home/ayoola/agentops/src/travel-agent/eval.yaml",
+      "run_id": "evalrun_f165eb04402a45999c21f8bb0a2d9b32",
+      "eval_id": "eval_47e5cc9f75cb4d21ba9977db40513bfb",
+      "status": "completed",
+      "report_url": "https://ai.azure.com/nextgen/r/PLV8AVX_RgmJZ8RycYGBJQ,rg-travel-agent-agentops,,aifoundry-travelagent-cnrvigxvus7im,travel-agent-sandbox/build/evaluations/eval_47e5cc9f75cb4d21ba9977db40513bfb/run/evalrun_f165eb04402a45999c21f8bb0a2d9b32",
+      "dataset": null,
+      "metric_binding": {
+        "smoke-core": "smoke-core",
+        "coherence": "coherence",
+        "fluency": "fluency"
+      },
+      "unused_metrics": []
+    },
+    "machine_readable_thresholds": true
+  },
+  "official_eval": {
+    "status": "missing",
+    "metadata_path": "/home/ayoola/agentops/.agentops/official-eval/metadata.json"
+  },
+  "doctor": {
+    "status": "ok",
+    "findings_total": 8,
+    "max_severity": "warning",
+    "counts": {
+      "critical": 0,
+      "warning": 6,
+      "info": 2
+    },
+    "top_findings": [
+      {
+        "id": "observability.trace_sampling_missing",
+        "severity": "warning",
+        "title": "Intelligent trace sampling is not evidence-ready",
+        "category": "operational_excellence"
+      },
+      {
+        "id": "opex.max_tokens_undefined",
+        "severity": "warning",
+        "title": "Output token limit is not set on model / evaluator configuration",
+        "category": "operational_excellence"
+      },
+      {
+        "id": "opex.release.no_continuous_eval",
+        "severity": "warning",
+        "title": "No enabled Foundry continuous evaluation rule is attached",
+        "category": "operational_excellence"
+      },
+      {
+        "id": "errors.no_runtime_telemetry",
+        "severity": "warning",
+        "title": "Production telemetry is not wired to the agent",
+        "category": "reliability"
+      },
+      {
+        "id": "responsible_ai.llm.dataset_bias_signals",
+        "severity": "warning",
+        "title": "[LLM-judged] Evaluation dataset shows distribution skew",
+        "category": "responsible_ai"
+      },
+      {
+        "id": "safety.config.continuous_eval_missing",
+        "severity": "warning",
+        "title": "No continuous evaluation rules configured",
+        "category": "responsible_ai"
+      },
+      {
+        "id": "observability.trace_replay_missing",
+        "severity": "info",
+        "title": "Trace replay link is not captured in release evidence",
+        "category": "operational_excellence"
+      },
+      {
+        "id": "opex.release.no_trace_regression_dataset",
+        "severity": "info",
+        "title": "Production traces are not feeding a regression dataset yet",
+        "category": "operational_excellence"
+      }
+    ]
+  },
+  "workflows": {
+    "pr_gate": false,
+    "deploy_workflows": [],
+    "deploy_count": 0,
+    "scheduled_doctor": false,
+    "watchdog": false,
+    "github_workflows": false,
+    "azure_devops_pipelines": false
+  },
+  "foundry": {
+    "status": "ok",
+    "agents_count": 1,
+    "evaluation_rules_count": 0,
+    "enabled_evaluation_rules": 0,
+    "diagnostics": {
+      "enabled": true,
+      "endpoint": "https://aifoundry-travelagent-cnrvigxvus7im.services.ai.azure.com/api/projects/travel-agent-sandbox",
+      "evaluation_rules_count": 0,
+      "status": "ok",
+      "agents_count": 1
+    }
+  },
+  "monitoring": {
+    "status": "skipped",
+    "request_count": 0,
+    "error_rate": null,
+    "p95_duration_seconds": null,
+    "input_token_count": null,
+    "output_token_count": null,
+    "rate_limit_429_count": 0,
+    "diagnostics": {
+      "enabled": true,
+      "status": "skipped",
+      "reason": "neither app_insights_resource_id nor log_analytics_workspace_id is configured, and no App Insights ApplicationId could be discovered from the connection string or Foundry project",
+      "discovery_reason": "Foundry telemetry discovery failed (ResourceNotFoundError: No Application Insights connection found.)."
+    }
+  },
+  "trace_dataset": {
+    "status": "missing",
+    "manifest": "/home/ayoola/agentops/.agentops/data/trace-regression-manifest.json"
+  },
+  "observability": {
+    "status": "ok",
+    "dataset_kind": "multi-turn",
+    "multi_turn_ready": true,
+    "multi_turn_rows": 0,
+    "rubrics_count": 1,
+    "rubrics": [
+      {
+        "name": "travel-concierge-quality",
+        "evaluator": "smoke-core",
+        "description": "Scores the Travel Agent against the intended product behavior.",
+        "dimensions": [
+          {
+            "name": "coherent_itinerary",
+            "description": "Completes the user's travel-planning goal and keeps the day-by-day plan aligned with stated constraints such as kids, budget, duration, and pace.",
+            "weight": 0.5
+          },
+          {
+            "name": "practical_notes",
+            "description": "Gives practical, actionable guidance on budget, transit, and weather without overpromising.",
+            "weight": 0.3
+          },
+          {
+            "name": "limitations_reminder",
+            "description": "Stays in scope and avoids claiming live bookings, confirmations, or prices it cannot verify.",
+            "weight": 0.2
+          }
+        ]
+      }
+    ],
+    "trace_sampling_enabled": false,
+    "trace_sampling_mode": null,
+    "sampling_policies": [],
+    "trace_replay_urls": [],
+    "evaluation_urls": [],
+    "datasets_url": null
+  },
+  "ailz": {
+    "status": "not_detected"
+  },
+  "governance": {
+    "assert": {
+      "summary_schema_version": 1,
+      "kind": "assert",
+      "status": "present",
+      "path": ".agentops/assert/latest.json",
+      "sha256": "ec4645e4500e254a09679f2c2fcdac5f9094c7ca9a7302d15af173a95123d17a",
+      "size_bytes": 3534,
+      "schema_version": "unknown",
+      "name": null,
+      "configured": true,
+      "message": null,
+      "counts": {
+        "total": 4
+      },
+      "checkpoints_covered": [],
+      "checkpoints_missing": []
+    },
+    "acs": {
+      "summary_schema_version": 1,
+      "kind": "acs",
+      "status": "not_configured",
+      "path": null,
+      "sha256": null,
+      "size_bytes": null,
+      "schema_version": "unknown",
+      "name": null,
+      "configured": false,
+      "message": null,
+      "counts": {},
+      "checkpoints_covered": [],
+      "checkpoints_missing": []
+    },
+    "redteam": {
+      "summary_schema_version": 1,
+      "kind": "redteam",
+      "status": "present",
+      "path": ".agentops/redteam/latest.json",
+      "sha256": "2bb0c1546757eb9fb0faa9a94d29ad595671a73a2628737c67b3782d46e82175",
+      "size_bytes": 839,
+      "schema_version": "unknown",
+      "name": null,
+      "configured": true,
+      "message": null,
+      "counts": {
+        "total": 6
+      },
+      "checkpoints_covered": [],
+      "checkpoints_missing": []
+    }
+  }
+}

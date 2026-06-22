@@ -1,0 +1,133 @@
+{
+  "config_path": "/home/ayoola/agentops/assert/eval_config.yaml",
+  "dimension_summary": {
+    "Inclusive Recommendations": {
+      "other": 0,
+      "passes": 4,
+      "skipped": 0,
+      "total": 4,
+      "violations": 0
+    },
+    "Safety and Reality Checks": {
+      "other": 0,
+      "passes": 2,
+      "skipped": 0,
+      "total": 2,
+      "violations": 0
+    },
+    "Verification of Options": {
+      "other": 0,
+      "passes": 1,
+      "skipped": 0,
+      "total": 2,
+      "violations": 1
+    }
+  },
+  "exit_code": 0,
+  "failed_cases": 1,
+  "has_violations": true,
+  "metrics": {
+    "elapsed_s": 80.231,
+    "per_model": {
+      "azure/gpt-4o-mini": {
+        "cache_creation_input_tokens": 0,
+        "cached_input_tokens": 44160,
+        "calls": 54,
+        "input_tokens": 129659,
+        "output_tokens": 16558
+      }
+    },
+    "schema_version": 1,
+    "stages": {
+      "inference": {
+        "cache_creation_input_tokens": 0,
+        "cache_hit_rate": 0.687714162147776,
+        "cached_input_tokens": 41344,
+        "calls": 35,
+        "elapsed_s": 55.192,
+        "input_tokens": 60118,
+        "output_tokens": 11064,
+        "per_model": {
+          "azure/gpt-4o-mini": {
+            "cache_creation_input_tokens": 0,
+            "cached_input_tokens": 41344,
+            "calls": 35,
+            "input_tokens": 60118,
+            "output_tokens": 11064
+          }
+        }
+      },
+      "judge": {
+        "cache_creation_input_tokens": 0,
+        "cache_hit_rate": 0.0,
+        "cached_input_tokens": 0,
+        "calls": 8,
+        "elapsed_s": 9.689,
+        "input_tokens": 35556,
+        "output_tokens": 3805,
+        "per_model": {
+          "azure/gpt-4o-mini": {
+            "cache_creation_input_tokens": 0,
+            "cached_input_tokens": 0,
+            "calls": 8,
+            "input_tokens": 35556,
+            "output_tokens": 3805
+          }
+        }
+      },
+      "systematize": {
+        "cache_creation_input_tokens": 0,
+        "cache_hit_rate": 0.0,
+        "cached_input_tokens": 0,
+        "calls": 2,
+        "elapsed_s": 8.228,
+        "input_tokens": 4049,
+        "output_tokens": 598,
+        "per_model": {
+          "azure/gpt-4o-mini": {
+            "cache_creation_input_tokens": 0,
+            "cached_input_tokens": 0,
+            "calls": 2,
+            "input_tokens": 4049,
+            "output_tokens": 598
+          }
+        }
+      },
+      "test_set": {
+        "cache_creation_input_tokens": 0,
+        "cache_hit_rate": 0.09406734366648851,
+        "cached_input_tokens": 2816,
+        "calls": 9,
+        "elapsed_s": 7.051,
+        "input_tokens": 29936,
+        "output_tokens": 1091,
+        "per_model": {
+          "azure/gpt-4o-mini": {
+            "cache_creation_input_tokens": 0,
+            "cached_input_tokens": 2816,
+            "calls": 9,
+            "input_tokens": 29936,
+            "output_tokens": 1091
+          }
+        }
+      }
+    },
+    "totals": {
+      "cache_creation_input_tokens": 0,
+      "cache_hit_rate": 0.3405856901564874,
+      "cached_input_tokens": 44160,
+      "calls": 54,
+      "input_tokens": 129659,
+      "output_tokens": 16558
+    }
+  },
+  "normalized_path": "/home/ayoola/agentops/.agentops/assert/latest.json",
+  "pass_rate": 0.875,
+  "passed_cases": 7,
+  "results_dir": "/home/ayoola/agentops/artifacts/results",
+  "run_id": "ci-tutorial",
+  "run_output_dir": "/home/ayoola/agentops/artifacts/results/travel-agent-v1/ci-tutorial",
+  "skipped_cases": 0,
+  "suite": "travel-agent-v1",
+  "total_cases": 8
+}

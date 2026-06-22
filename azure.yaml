@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+requiredVersions:
+  extensions:
+    azure.ai.agents: ">=0.1.38-preview"
+name: agentops
+services:
+  travel-agent:
+    project: src/travel-agent
+    host: azure.ai.agent
+    language: none
+    config:
+      deployments:
+        - name: gpt-4o-mini
+          model:
+            format: OpenAI
+            name: gpt-4o-mini
+          sku:
+            name: GlobalStandard
+            capacity: 10
