@@ -168,17 +168,16 @@ jobs:
                   repaired = os.path.abspath(os.path.join(".agentops/azd", os.path.basename(uri)))
                   if os.path.exists(repaired):
                       ds["local_uri"] = repaired
-                      yaml.safe_dump(recipe, open(recipe_path, "w"), sort_keys=False)
                       print("repaired dataset.local_uri =", repaired)
                   else:
                       print("WARNING: dataset missing at", uri, "and", repaired)
               else:
                   print("dataset.local_uri OK =", uri)
-                  for evaluator in recipe.get("evaluators", []):
-                    if isinstance(evaluator, dict) and evaluator.get("local_uri"):
-                      evaluator["local_uri"] = absify(evaluator["local_uri"], recipe_dir)
-                      print("normalized evaluator.local_uri =", evaluator["local_uri"])
-                  yaml.safe_dump(recipe, open(recipe_path, "w"), sort_keys=False)
+          for evaluator in recipe.get("evaluators", []):
+              if isinstance(evaluator, dict) and evaluator.get("local_uri"):
+                  evaluator["local_uri"] = absify(evaluator["local_uri"], recipe_dir)
+                  print("normalized evaluator.local_uri =", evaluator["local_uri"])
+          yaml.safe_dump(recipe, open(recipe_path, "w"), sort_keys=False)
           PY
 
       - name: Hydrate azd environment for Foundry project context
