@@ -143,9 +143,9 @@ jobs:
           python - <<'PY'
           import os, yaml
 
-          def absify(v):
+          def absify(v, base=None):
               if isinstance(v, str) and v and not os.path.isabs(v):
-                  return os.path.abspath(v)
+                  return os.path.abspath(os.path.join(base or os.curdir, v))
               return v
 
           cand_path = ".agentops/deployments/agentops.candidate.yaml"
@@ -160,6 +160,7 @@ jobs:
 
           recipe_path = cand.get("eval_recipe") or "src/travel-agent/eval.yaml"
           recipe = yaml.safe_load(open(recipe_path))
+          recipe_dir = os.path.dirname(recipe_path)
           ds = recipe.get("dataset")
           if isinstance(ds, dict) and ds.get("local_uri"):
               uri = ds["local_uri"]
@@ -173,6 +174,11 @@ jobs:
                       print("WARNING: dataset missing at", uri, "and", repaired)
               else:
                   print("dataset.local_uri OK =", uri)
+                  for evaluator in recipe.get("evaluators", []):
+                    if isinstance(evaluator, dict) and evaluator.get("local_uri"):
+                      evaluator["local_uri"] = absify(evaluator["local_uri"], recipe_dir)
+                      print("normalized evaluator.local_uri =", evaluator["local_uri"])
+                  yaml.safe_dump(recipe, open(recipe_path, "w"), sort_keys=False)
           PY
 
       - name: Hydrate azd environment for Foundry project context
