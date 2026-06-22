@@ -231,10 +231,16 @@ jobs:
             log=".agentops/results/latest/agentops-eval-attempt-${attempt}.log"
             agentops eval run --config ".agentops/deployments/agentops.candidate.yaml" --output ".agentops/results/latest" 2>&1 | tee "$log"
             ec=${PIPESTATUS[0]}
-            if [ $ec -ne 1 ] || ! grep -q "AzureDeveloperCLICredential: signal: killed" "$log" || [ $attempt -eq 2 ]; then
+            if [ $ec -ne 1 ] || [ $attempt -eq 2 ]; then
               break
             fi
-            echo "azd eval show credential subprocess was killed; refreshing azd auth and retrying once."
+            if grep -q "AzureDeveloperCLICredential: signal: killed" "$log"; then
+              echo "azd eval show credential subprocess was killed; refreshing azd auth and retrying once."
+            elif grep -Eiq "evaluator .*not found" "$log"; then
+              echo "Foundry evaluator lookup is not ready yet; refreshing azd auth and retrying once."
+            else
+              break
+            fi
             azd auth login \
               --client-id "$AZURE_CLIENT_ID" \
               --federated-credential-provider "github" \
