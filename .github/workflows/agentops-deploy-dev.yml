@@ -175,7 +175,6 @@ jobs:
                   print("dataset.local_uri OK =", uri)
           for evaluator in recipe.get("evaluators", []):
               if isinstance(evaluator, dict) and evaluator.get("local_uri"):
-                  evaluator.pop("version", None)
                   evaluator["local_uri"] = absify(evaluator["local_uri"], recipe_dir)
                   print("normalized evaluator.local_uri =", evaluator["local_uri"])
           yaml.safe_dump(recipe, open(recipe_path, "w"), sort_keys=False)
@@ -202,6 +201,7 @@ jobs:
       - name: Upload azd eval assets
         env:
           AZURE_ENV_NAME: "dev"
+          FOUNDRY_PROJECT_ENDPOINT: ${{ vars.AZURE_AI_FOUNDRY_PROJECT_ENDPOINT }}
         run: |
           set -euo pipefail
           recipe="$(python - <<'PY'
@@ -210,6 +210,7 @@ jobs:
           print(cand.get('eval_recipe') or 'src/travel-agent/eval.yaml')
           PY
           )"
+          python .github/scripts/bootstrap-azd-eval-evaluators.py --config "$recipe"
           azd --no-prompt --environment "$AZURE_ENV_NAME" ai agent eval update --config "$recipe"
 
       - name: Run azd AI agent eval through AgentOps
