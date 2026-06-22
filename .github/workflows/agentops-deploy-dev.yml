@@ -141,15 +141,37 @@ jobs:
       - name: Normalize candidate + recipe paths (agentops 0.5.2 staging workaround)
         run: |
           python - <<'PY'
-          import os, yaml
+          import json, os, yaml
 
           def absify(v, base=None):
               if isinstance(v, str) and v and not os.path.isabs(v):
                   return os.path.abspath(os.path.join(base or os.curdir, v))
               return v
 
+          def split_agent_ref(v):
+              if isinstance(v, str) and ":" in v:
+                  name, version = v.rsplit(":", 1)
+                  if name and version:
+                      return name, version
+              return None, None
+
+          def load_candidate_agent_ref(cand):
+              record_path = ".agentops/deployments/foundry-agent.json"
+              if os.path.exists(record_path):
+                  with open(record_path, encoding="utf-8") as f:
+                      record = json.load(f)
+                  for key in ("foundry_agent_version_id", "candidate_agent"):
+                      name, version = split_agent_ref(record.get(key))
+                      if name and version:
+                          return name, version
+              name, version = split_agent_ref(cand.get("agent"))
+              if name and version:
+                  return name, version
+              raise RuntimeError("candidate deployment record did not include an agent version")
+
           cand_path = ".agentops/deployments/agentops.candidate.yaml"
           cand = yaml.safe_load(open(cand_path))
+          candidate_name, candidate_version = load_candidate_agent_ref(cand)
           for k in ("eval_recipe", "prompt_file", "assert_path", "redteam_path"):
               if k in cand:
                   cand[k] = absify(cand[k])
@@ -161,6 +183,17 @@ jobs:
           recipe_path = cand.get("eval_recipe") or "src/travel-agent/eval.yaml"
           recipe = yaml.safe_load(open(recipe_path))
           recipe_dir = os.path.dirname(recipe_path)
+          agent = recipe.get("agent")
+          if not isinstance(agent, dict):
+              raise RuntimeError("azd eval recipe must contain an agent mapping")
+          recipe_agent_name = str(agent.get("name") or "")
+          if recipe_agent_name and recipe_agent_name != candidate_name:
+              raise RuntimeError(
+                  f"candidate agent {candidate_name!r} does not match recipe agent {recipe_agent_name!r}"
+              )
+          agent["name"] = candidate_name
+          agent["version"] = candidate_version
+          print("pinned recipe agent =", f"{candidate_name}:{candidate_version}")
           ds = recipe.get("dataset")
           if isinstance(ds, dict) and ds.get("local_uri"):
               uri = ds["local_uri"]
@@ -192,9 +225,27 @@ jobs:
           azd env set FOUNDRY_PROJECT_ENDPOINT "$AZURE_AI_FOUNDRY_PROJECT_ENDPOINT"
           azd env set AZURE_AI_FOUNDRY_PROJECT_ENDPOINT "$AZURE_AI_FOUNDRY_PROJECT_ENDPOINT"
           azd env set AZURE_SUBSCRIPTION_ID "$AZURE_SUBSCRIPTION_ID"
+          read -r candidate_name candidate_version candidate_key <<EOF
+          $(python - <<'PY'
+          import json, re
+
+          with open(".agentops/deployments/foundry-agent.json", encoding="utf-8") as f:
+              record = json.load(f)
+          ref = record.get("foundry_agent_version_id") or record.get("candidate_agent")
+          if not isinstance(ref, str) or ":" not in ref:
+              raise SystemExit("candidate deployment record did not include an agent version")
+          name, version = ref.rsplit(":", 1)
+          key = re.sub(r"[^A-Za-z0-9]", "_", name).upper()
+          print(name, version, key)
+          PY
+          )
+          EOF
+          azd env set "AGENT_${candidate_key}_NAME" "$candidate_name"
+          azd env set "AGENT_${candidate_key}_VERSION" "$candidate_version"
           if [ -n "${AZURE_OPENAI_ENDPOINT:-}" ]; then
             azd env set AZURE_OPENAI_ENDPOINT "$AZURE_OPENAI_ENDPOINT"
           fi
+          echo "Pinned azd agent environment: AGENT_${candidate_key}_VERSION=<set>"
           echo "Hydrated azd env '$AZURE_ENV_NAME':"
           azd env get-values | sed -E 's/=.*/=<set>/'
 
