@@ -124,7 +124,7 @@ jobs:
 
       - name: Install pinned azd AI agents extension
         env:
-          AGENTOPS_AZD_AI_AGENTS_EXTENSION_VERSION: "1.0.0"
+          AGENTOPS_AZD_AI_AGENTS_EXTENSION_VERSION: "0.1.41-preview"
         run: |
           azd extension install azure.ai.agents --version "$AGENTOPS_AZD_AI_AGENTS_EXTENSION_VERSION"
 
